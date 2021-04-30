@@ -14,18 +14,18 @@ public class ItemController {
     private final ItemRepository itemRepository;
 
     @PostMapping("/item")
-    Item newItem(@RequestBody Item newItem) {
+    public Item newItem(@RequestBody Item newItem) {
         return itemRepository.save(newItem);
     }
 
     @GetMapping("/item")
-    List<Item> showItems() {
+    public List<Item> showItems() {
         return itemRepository.findAll();
     }
 
     //TODO zabezpieczenie przed wywaleniem serwera
     @DeleteMapping("/item")
-    ResponseEntity deleteItem(@RequestBody Long id) {
+    public ResponseEntity deleteItem(@RequestBody Long id) {
         itemRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

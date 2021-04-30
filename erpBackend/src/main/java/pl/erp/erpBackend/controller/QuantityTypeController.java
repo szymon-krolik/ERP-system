@@ -15,18 +15,18 @@ public class QuantityTypeController {
     private final QuantityTypeRepository quantityTypeRepository;
 
     @PostMapping("/quantityType")
-    QuantityType newQuantityType(@RequestBody QuantityType newQuantityType) {
+    public QuantityType newQuantityType(@RequestBody QuantityType newQuantityType) {
         return quantityTypeRepository.save(newQuantityType);
     }
 
     @GetMapping("/quantityType")
-    List<QuantityType> showQuantityType() {
+    public List<QuantityType> showQuantityType() {
         return quantityTypeRepository.findAll();
     }
 
     //TODO zabezpieczenie przed wywaleniem serwera
     @DeleteMapping("/quantityType")
-    ResponseEntity deleteQuantityType(@RequestBody Long id) {
+    public ResponseEntity deleteQuantityType(@RequestBody Long id) {
         quantityTypeRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

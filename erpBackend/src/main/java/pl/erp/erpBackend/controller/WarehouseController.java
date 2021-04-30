@@ -15,18 +15,18 @@ public class WarehouseController {
     private final WarehouseRepository warehouseRepository;
 
     @PostMapping("/warehouse")
-    Warehouse newWarehouse(@RequestBody Warehouse newWarehouse) {
+    public Warehouse newWarehouse(@RequestBody Warehouse newWarehouse) {
         return warehouseRepository.save(newWarehouse);
     }
 
     @GetMapping("/warehouse")
-    List<Warehouse> showWarehouses() {
+    public List<Warehouse> showWarehouses() {
         return warehouseRepository.findAll();
     }
 
     //TODO zabezpieczenie przed wywaleniem serwera
     @DeleteMapping("/warehouse")
-    ResponseEntity deleteQuantityType(@RequestBody Long id) {
+    public ResponseEntity deleteQuantityType(@RequestBody Long id) {
         warehouseRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

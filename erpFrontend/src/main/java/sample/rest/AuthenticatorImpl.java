@@ -1,29 +1,38 @@
 package sample.rest;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+import sample.dto.OperatorAuthenticationResultDto;
 import sample.dto.OperatorCredentialsDto;
 
 public class AuthenticatorImpl implements Authenticator {
+    private static final String AUTHENTICATION_URL = "http://localhost:8080/verify-operator";
+    private final RestTemplate restTemplate;
 
-    private static final String LOGIN = "skuser";
-    private static final String PASSWORD = "skpassword";
+    public AuthenticatorImpl() {
+        restTemplate = new RestTemplate();
+    }
+
 
     @Override
     public void authenticate(OperatorCredentialsDto operatorCredentialsDto, AuthenticationResultHandler authenticationResultHandler) {
-        Runnable authenticationTask = createAuthenticationTask(operatorCredentialsDto, authenticationResultHandler);
+        Runnable authenticationTask = () -> {
+            processAuthentication(operatorCredentialsDto, authenticationResultHandler);
+        };
         Thread authenticationThread = new Thread(authenticationTask);
         authenticationThread.setDaemon(true);
         authenticationThread.start();
     }
 
-    private Runnable createAuthenticationTask(OperatorCredentialsDto operatorCredentialsDto, AuthenticationResultHandler authenticationResultHandler) {
-        return () -> {
-            try {
-                Thread.sleep(1000);
-                boolean authenticated = LOGIN.equals(operatorCredentialsDto.getLogin()) && PASSWORD.equals(operatorCredentialsDto.getPassword());
-                authenticationResultHandler.handle(authenticated);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        };
+
+    private void processAuthentication(OperatorCredentialsDto operatorCredentialsDto, AuthenticationResultHandler authenticationResultHandler) {
+        //URL, user data
+//        ResponseEntity<OperatorAuthenticationResultDto> responseEntity = restTemplate.postForEntity(AUTHENTICATION_URL, operatorCredentialsDto, OperatorAuthenticationResultDto.class);
+        OperatorAuthenticationResultDto dto = new OperatorAuthenticationResultDto();
+        dto.setAuthenticated(true);
+        dto.setFirstName("Szymon");
+        dto.setLastName("Krolik");
+        dto.setIdOperato(1L);
+        authenticationResultHandler.handle(dto);
     }
 }

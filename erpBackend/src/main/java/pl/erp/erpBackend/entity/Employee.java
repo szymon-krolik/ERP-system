@@ -18,6 +18,9 @@ public class Employee {
     @Column
     private String lastName;
 
+    @Column
+    private String salary;
+
     @OneToOne(mappedBy = "employee")
     private Operator operator;
 }
