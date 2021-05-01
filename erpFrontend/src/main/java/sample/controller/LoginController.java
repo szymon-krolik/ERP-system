@@ -74,7 +74,7 @@ public class LoginController implements Initializable {
         });
     }
 
-    //TODO
+
     private void showIncorrectCredentialsMessage() {
         System.out.println("incorrect credentials");
     }

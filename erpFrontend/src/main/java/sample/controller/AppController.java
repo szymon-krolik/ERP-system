@@ -4,6 +4,7 @@ package sample.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
@@ -14,11 +15,12 @@ import java.util.ResourceBundle;
 
 public class AppController implements Initializable {
 
+
     @FXML
     private Pane appPane;
 
-    public AppController() {
 
+    public AppController() {
     }
 
     @Override
@@ -26,6 +28,7 @@ public class AppController implements Initializable {
         loadView();
     }
 
+    //TODO obsluga wyjatkow
     private void loadView() {
 
         //wstrzykniecie widoku pracownikow do glownego widoku
