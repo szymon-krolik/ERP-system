@@ -46,7 +46,7 @@ public class DeleteEmployeeController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeCancelButton();
         initializeDeleteButton();
-        loadEmployeeData();
+
     }
 
     private void initializeDeleteButton() {
@@ -56,21 +56,23 @@ public class DeleteEmployeeController implements Initializable {
 
             Thread thread = new Thread(() -> {
                 employeeRestClient.deleteEmployee(idEmployee, () -> {
-                    waitingPopup.close();
-                    Stage infoPopup = popupFactory.createInfoPopup("Employee has been deleted", () -> {
-                        getStage().close();
+                    Platform.runLater(() ->{
+                        waitingPopup.close();
+                        Stage infoPopup = popupFactory.createInfoPopup("Employee has been deleted", () -> {
+                            getStage().close();
+                        });
+                        infoPopup.show();
                     });
-                    infoPopup.close();
                 });
             });
             thread.start();
         });
     }
 
-    public void loadEmployeeData(EmployeeTableModel employeeTableModel) {
-        this.idEmployee = idEmployee;
-        firstNameLabel.setText(employeeTableModel.getFirstName());
-        lastNameLabel.setText(employeeTableModel.getLastName());
+    public void loadEmployeeData(EmployeeTableModel employee) {
+        this.idEmployee = employee.getIdEmployee();
+        firstNameLabel.setText(employee.getFirstName());
+        lastNameLabel.setText(employee.getLastName());
 
 
 }
