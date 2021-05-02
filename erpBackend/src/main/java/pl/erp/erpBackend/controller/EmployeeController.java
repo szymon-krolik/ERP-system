@@ -18,8 +18,19 @@ public class EmployeeController {
     private final EmployeeRepository employeeRepository;
 
     @PostMapping("/employee")
-    public EmployeeDto newEmployee(@RequestBody EmployeeDto newEmployee) {
-        return EmployeeDto.of(employeeRepository.save(Employee.of(newEmployee)));
+    public EmployeeDto saveOrUpdateEmployee(@RequestBody EmployeeDto dto) {
+        if (dto.getIdEmployee() == null) {
+            return EmployeeDto.of(employeeRepository.save(Employee.of(dto)));
+        } else {
+            Optional<Employee> optionalEmployee = employeeRepository.findById(dto.getIdEmployee());
+            if (optionalEmployee.isPresent()) {
+                Employee employee = optionalEmployee.get();
+                employee.updateEmployee(dto);
+                return EmployeeDto.of(employeeRepository.save(employee));
+            } else {
+                throw new RuntimeException("Cant find user tih given id: " + dto.getIdEmployee());
+            }
+        }
     }
 
     @GetMapping("/employee")
@@ -35,17 +46,13 @@ public class EmployeeController {
         //TODO obsluga jesli nie ma pracwonika
         Thread.sleep(500);
         Optional<Employee> optionalEmployee = employeeRepository.findById(idEmployee);
-
-
             return EmployeeDto.of(optionalEmployee.get());
-
-
     }
 
     //TODO zabezpieczenie przed wywaleniem serwera
-    @DeleteMapping("/employee")
-    public ResponseEntity deleteEmployee(@RequestBody Long id) {
-        employeeRepository.deleteById(id);
+    @DeleteMapping("/employee/{idEmployee}")
+    public ResponseEntity deleteEmployee(@PathVariable Long idEmployee) {
+        employeeRepository.deleteById(idEmployee);
         return ResponseEntity.ok().build();
     }
 

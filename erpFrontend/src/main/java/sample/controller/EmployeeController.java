@@ -28,7 +28,8 @@ import java.util.stream.Collectors;
 
 public class EmployeeController  implements Initializable {
     private static final String ADD_EMPLOYEE_FXML = "/fxml/add-employee.fxml";
-    private static final String VIEW_EMPLOYEEFXML = "/fxml/view-employee.fxml";
+    private static final String EDIT_EMPLOYEE_FXML = "/fxml/edit-employee.fxml";
+    private static final String VIEW_EMPLOYEE_FXML = "/fxml/view-employee.fxml";
 
     private final EmployeeRestClient employeeRestClient;
     private final PopupFactory popupFactory;
@@ -63,11 +64,57 @@ public class EmployeeController  implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeAddEmployeeButton();
+        initializeViewEmployeeButton();
+        initializeEditEmployeeButton();
+        initializeDeleteEmployeeButton();
         initializeRefreshButton();
         initializeTableView();
-        initializeViewEmployeeButton();
+
 
     }
+
+    private void initializeDeleteEmployeeButton() {
+        deleteButton.setOnAction(x -> {
+            EmployeeTableModel selectedEmployee = employeeTableView.getSelectionModel().getSelectedItem();
+            if (selectedEmployee != null) {
+                Stage deleteEmployeeStage = createEmployeeCrudStage();
+
+
+            }
+        });
+    }
+
+    private void initializeEditEmployeeButton() {
+        editButton.setOnAction( x -> {
+            EmployeeTableModel selectedEmployee = employeeTableView.getSelectionModel().getSelectedItem();
+            if ( selectedEmployee != null ) {
+
+                try {
+                    Stage waitingPopup = popupFactory.createWaitingPopup("Loading employee data");
+                    waitingPopup.show();
+                    Stage editEmployeeEditStage = createEmployeeCrudStage();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(EDIT_EMPLOYEE_FXML));
+                    Scene scene = new Scene((BorderPane) loader.load(), 500, 400);
+                    editEmployeeEditStage.setScene(scene);
+                    EditEmployeeController controller = loader.getController();
+                    controller.loadEmployeeData(selectedEmployee.getIdEmployee(), () -> {
+                        waitingPopup.close();
+                        editEmployeeEditStage.show();
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException("Cant load view: " + EDIT_EMPLOYEE_FXML);
+                }
+            }
+        });
+    }
+
+    private Stage createEmployeeCrudStage() {
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        return stage;
+    }
+
 
     private void initializeViewEmployeeButton() {
         viewButton.setOnAction( x -> {
@@ -81,7 +128,7 @@ public class EmployeeController  implements Initializable {
                     Stage viewEmployeeStage = new Stage();
                     viewEmployeeStage.initStyle(StageStyle.UNDECORATED);
                     viewEmployeeStage.initModality(Modality.APPLICATION_MODAL);
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource(VIEW_EMPLOYEEFXML));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(VIEW_EMPLOYEE_FXML));
                     Scene scene = new Scene((BorderPane) loader.load(), 500, 400);
                     viewEmployeeStage.setScene(scene);
                     ViewEmployeeController controller = loader.<ViewEmployeeController>getController();
